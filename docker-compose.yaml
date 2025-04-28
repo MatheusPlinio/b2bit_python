@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    container_name: dev_postgres
+    environment:
+      POSTGRES_DB: mydatabase
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - devnet
+
+  redis:
+    image: redis:7
+    container_name: dev_redis
+    ports:
+      - "6379:6379"
+    networks:
+      - devnet
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dev_python
+    command: bash -c "pip install -r requirements.txt && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgres://myuser:mypassword@db:5432/mydatabase
+      CELERY_BROKER_URL: redis://redis:6379/0
+    depends_on:
+      - db
+      - redis
+    networks:
+      - devnet
+
+  celery:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dev_celery
+    command: bash -c "pip install -r requirements.txt && celery -A seu_projeto worker --loglevel=info"
+    volumes:
+      - .:/app
+    environment:
+      DATABASE_URL: postgres://myuser:mypassword@db:5432/mydatabase
+      CELERY_BROKER_URL: redis://redis:6379/0
+    depends_on:
+      - redis
+      - db
+      - app
+    networks:
+      - devnet
+
+volumes:
+  postgres_data:
+
+networks:
+  devnet:
