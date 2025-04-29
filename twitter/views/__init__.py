@@ -1,2 +1,3 @@
 from .register_user_api_view import RegisterUserAPIView
 from .follow_view_set_view import FollowViewSet
+from .post_view_set import PostCreateView, PostUpdateView
