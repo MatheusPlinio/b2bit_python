@@ -4,3 +4,5 @@ from .post_view_set import PostCreateView, PostUpdateView, PostListView
 from .user_login_view import CustomTokenObtainPairView
 from .post_delete_view import PostDeleteView
 from .post_like_toggle_view import PostLikeToggleView
+from .follow_toggle_view import FollowToggleView
+from .user_hover_info_view import UserHoverInfoView
