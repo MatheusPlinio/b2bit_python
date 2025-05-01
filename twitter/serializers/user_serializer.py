@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from drf_spectacular.utils import extend_schema_field
 from ..models import User
 
 
@@ -11,8 +12,10 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['id', 'username', 'email',
                   'followers_count', 'following_count']
 
-    def get_followers_count(self, obj):
+    @extend_schema_field(serializers.IntegerField())
+    def get_followers_count(self, obj) -> int:
         return obj.followers.count()
 
-    def get_following_count(self, obj):
+    @extend_schema_field(serializers.IntegerField())
+    def get_following_count(self, obj) -> int:
         return obj.following.count()
