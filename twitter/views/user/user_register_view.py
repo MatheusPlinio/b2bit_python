@@ -2,18 +2,18 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema_field
-from ..serializers import RegisterUserSerializer
+from ...serializers.user.register_serializer import UserRegistrationSerializer
 
 
-class RegisterUserAPIView(APIView):
+class UserRegisterAPIView(APIView):
     permission_classes = []
-    serializer_class = RegisterUserSerializer
+    serializer_class = UserRegistrationSerializer
 
-    @extend_schema_field(RegisterUserSerializer)
+    @extend_schema_field(UserRegistrationSerializer)
     def post(self, request):
-        serializer = RegisterUserSerializer(data=request.data)
+        serializer = UserRegistrationSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
-            response_serializer = RegisterUserSerializer(user)
+            response_serializer = UserRegistrationSerializer(user)
             return Response(response_serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

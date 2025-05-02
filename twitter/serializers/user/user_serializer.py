@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from drf_spectacular.utils import extend_schema_field
-from ..models import User
+from ...models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
