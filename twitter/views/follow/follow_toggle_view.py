@@ -23,13 +23,6 @@ class FollowToggleView(APIView):
 
         if not created:
             follow.delete()
-
-            cache.delete(f"user_followers_count_{target_user.id}")
-            cache.delete(f"user_feed_{request.user.id}")
-
             return Response({'status': 'unfollowed'})
-
-        cache.delete(f"user_followers_count_{target_user.id}")
-        cache.delete(f"user_feed_{request.user.id}")
 
         return Response({'status': 'followed'})

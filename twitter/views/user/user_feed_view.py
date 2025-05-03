@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.core.cache import cache
 from drf_spectacular.utils import extend_schema
-from ...tasks import rebuild_user_feed_cache
+from twitter.tasks.rebuild_user_feed import rebuild_user_feed_cache
 
 
 @extend_schema(tags=["Account"])
@@ -18,5 +18,6 @@ class UserFeedView(APIView):
         if cached is not None:
             return Response(cached)
 
+        # Se não tiver no cache, dispara rebuild e responde 202
         rebuild_user_feed_cache.delay(user.id)
         return Response([], status=202)

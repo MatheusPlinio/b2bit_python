@@ -4,6 +4,7 @@ from rest_framework import status, permissions
 from drf_spectacular.utils import extend_schema
 from django.core.cache import cache
 from twitter.models import Post
+from twitter.tasks.update_post_likes import update_post_likes_count
 
 
 @extend_schema(tags=["Post"])
@@ -24,6 +25,13 @@ class PostLikeToggleView(APIView):
             post.likes.add(user)
             liked = True
 
-        cache.delete(f"post_likes_count_{post.id}")
+        update_post_likes_count.delay(post.id)
 
-        return Response({"liked": liked, "likes_count": post.likes.count()}, status=status.HTTP_200_OK)
+        likes_count = cache.get(f"post_likes_count_{post.id}")
+        if likes_count is None:
+            likes_count = post.likes.count()
+
+        return Response({
+            "liked": liked,
+            "likes_count": likes_count
+        }, status=status.HTTP_200_OK)
