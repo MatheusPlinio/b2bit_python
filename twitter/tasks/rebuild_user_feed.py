@@ -35,7 +35,7 @@ def rebuild_user_feed_cache(user_id):
 
         serialized_posts = PostSerializer(posts, many=True).data
 
-        cache.set(f"user_feed_{user.id}", serialized_posts, timeout=60 * 60)
+        cache.set(f"user_feed_{user.id}", serialized_posts, timeout=2 * 2)
 
         print(
             f"Feed do usuário {user.username} reconstruído e armazenado no cache com {len(posts)} posts.")
