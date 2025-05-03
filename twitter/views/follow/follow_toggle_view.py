@@ -3,6 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import extend_schema
+from django.core.cache import cache
 from ...models import User, Follow
 
 
@@ -22,6 +23,13 @@ class FollowToggleView(APIView):
 
         if not created:
             follow.delete()
+
+            cache.delete(f"user_followers_count_{target_user.id}")
+            cache.delete(f"user_feed_{request.user.id}")
+
             return Response({'status': 'unfollowed'})
+
+        cache.delete(f"user_followers_count_{target_user.id}")
+        cache.delete(f"user_feed_{request.user.id}")
 
         return Response({'status': 'followed'})

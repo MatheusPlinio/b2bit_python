@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from drf_spectacular.utils import extend_schema_field
+from django.core.cache import cache
 from ...models import User
 
 
@@ -14,7 +15,12 @@ class UserSerializer(serializers.ModelSerializer):
 
     @extend_schema_field(serializers.IntegerField())
     def get_followers_count(self, obj) -> int:
-        return obj.followers.count()
+        cache_key = f"user_followers_count_{obj.id}"
+        count = cache.get(cache_key)
+        if count is None:
+            count = obj.followers.count()
+            cache.set(cache_key, count, timeout=60)
+        return count
 
     @extend_schema_field(serializers.IntegerField())
     def get_following_count(self, obj) -> int:
