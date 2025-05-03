@@ -1,9 +1,11 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
+from drf_spectacular.utils import extend_schema
 from twitter.models import Post
 
 
+@extend_schema(tags=["Post"])
 class PostLikeToggleView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 

@@ -1,10 +1,12 @@
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
+from drf_spectacular.utils import extend_schema
 from ...models import Post
 from ...serializers.post.post_serializer import PostSerializer
 from ...permissions import IsOwnerOrReadOnly
 
 
+@extend_schema(tags=["Post"])
 class PostListView(ListAPIView):
     queryset = Post.objects.select_related(
         'author').all().order_by('-created_at')

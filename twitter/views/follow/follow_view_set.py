@@ -3,10 +3,12 @@ from rest_framework import viewsets, mixins
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from drf_spectacular.utils import extend_schema
 from ...models import Follow
 from ...serializers.user.follow_serializer import FollowSerializer
 
 
+@extend_schema(tags=["Follow"])
 class FollowViewSet(mixins.CreateModelMixin,
                     mixins.DestroyModelMixin,
                     viewsets.GenericViewSet):

@@ -1,10 +1,11 @@
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from drf_spectacular.utils import extend_schema_field
+from drf_spectacular.utils import extend_schema_field, extend_schema
 from ...serializers.user.register_serializer import UserRegistrationSerializer
 
 
+@extend_schema(tags=["Account"])
 class UserRegisterAPIView(APIView):
     permission_classes = []
     serializer_class = UserRegistrationSerializer

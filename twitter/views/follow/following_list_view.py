@@ -1,9 +1,11 @@
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
+from drf_spectacular.utils import extend_schema
 from ...models import User
 from ...serializers.user.user_serializer import UserSerializer
 
 
+@extend_schema(tags=["Follow"])
 class FollowingListView(ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = UserSerializer
