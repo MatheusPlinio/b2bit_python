@@ -38,4 +38,7 @@ typing_extensions==4.13.2
 tzdata==2025.2
 uritemplate==4.1.1
 vine==5.1.0
+python-dotenv==1.0.1
 wcwidth==0.2.13
+Faker>=23.0.0
+gunicorn>=21.0.0
