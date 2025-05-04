@@ -6,9 +6,10 @@ from django.core.cache import cache
 from twitter.models import Post, Follow
 from django.shortcuts import get_object_or_404
 from twitter.tasks.update_post_likes import update_post_likes_count
+from twitter.serializers.post.responses.post_like_toggle_response_serializer import PostLikeToggleResponseSerializer
 
 
-@extend_schema(tags=["Post"])
+@extend_schema(tags=["Post"], responses={200: PostLikeToggleResponseSerializer})
 class PostLikeToggleView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
@@ -23,19 +24,15 @@ class PostLikeToggleView(APIView):
             post.likes.add(user)
             liked = True
 
-        # dispara a task de atualizar contagem no cache
         update_post_likes_count.delay(post.id)
 
-        # invalida feed de quem segue o autor + do próprio usuário
         author = post.author
         follower_ids = Follow.objects.filter(following=author) \
                                      .values_list('follower_id', flat=True)
-        # também invalida o feed do autor se quiser refletir o próprio like
         keys_to_clear = set(follower_ids) | {user.id, author.id}
         for uid in keys_to_clear:
             cache.delete(f"user_feed_{uid}")
 
-        # retorna imediatamente a contagem
         likes_count = cache.get(f"post_likes_count_{post.id}")
         if likes_count is None:
             likes_count = post.likes.count()

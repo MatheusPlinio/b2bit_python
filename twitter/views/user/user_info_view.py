@@ -2,10 +2,11 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from drf_spectacular.utils import extend_schema
 from rest_framework.response import Response
-from ...models import User, Follow
+from twitter.models import User, Follow
+from twitter.serializers.user.responses.user_info_response_serializer import UserInfoResponseSerializer
 
 
-@extend_schema(tags=["Account"])
+@extend_schema(tags=["Account"], responses=({200: UserInfoResponseSerializer}))
 class UserInfoView(APIView):
     permission_classes = [IsAuthenticated]
 

@@ -4,9 +4,10 @@ from rest_framework.permissions import IsAuthenticated
 from django.core.cache import cache
 from drf_spectacular.utils import extend_schema
 from twitter.tasks.rebuild_user_feed import rebuild_user_feed_cache
+from twitter.serializers.user.responses.user_feed_response_serializer import FeedPostSerializer
 
 
-@extend_schema(tags=["Account"])
+@extend_schema(tags=["Account"], responses={200: FeedPostSerializer})
 class UserFeedView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -18,6 +19,5 @@ class UserFeedView(APIView):
         if cached is not None:
             return Response(cached)
 
-        # Se não tiver no cache, dispara rebuild e responde 202
         rebuild_user_feed_cache.delay(user.id)
         return Response([], status=202)
