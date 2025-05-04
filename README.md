@@ -16,18 +16,19 @@ Caso esteja no **Windows (WSL2)**, recomendamos seguir esse guia de instalação
 
 ```bash
 git clone https://github.com/seu-usuario/seu-backend.git
-
+```
 copie o .env.example para .env
 
 ```bash
 cp .env.example .env
-
+```
 e suba o projeto
 
 ```bash
 docker compose up -d --build
-
+```
 A documentação Swagger estará disponível após o backend subir em:
 
 ```bash
 http://localhost:8000/swagger/
+```
